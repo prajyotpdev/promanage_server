@@ -5,7 +5,7 @@ const app = express()
 const MongoClient = require('mongodb').MongoClient
 const mongoose = require('mongoose')
 const authRoutes = require('./src/routes/auth')
-const taskRoutes = require("./src/routes/tasks.js")
+// const taskRoutes = require("./src/routes/tasks.js")
 
 app.use(cors());
 app.use(express.urlencoded({ extended: false }))
