@@ -13,7 +13,7 @@ console.log(taskTitle+taskCheckList + taskPriority + taskStatus + taskValidity +
             });
         }
 
-        jobDetails = new task({  
+        taskDetails = new task({  
           taskCheckList,
           taskPriority,
           taskStatus,
@@ -22,7 +22,7 @@ console.log(taskTitle+taskCheckList + taskPriority + taskStatus + taskValidity +
           refUserId: req.body.userId,
         });
 
-        await jobDetails.save();
+        await taskDetails.save();
 
         res.json({ message: "New Task created successfully" });
     } catch (error) {
@@ -32,46 +32,73 @@ console.log(taskTitle+taskCheckList + taskPriority + taskStatus + taskValidity +
 
 router.post("/edit/:taskId", jwtVerify, async (req, res) => {
     try {
-        const { companyName, logoUrl, title, description } = req.body;
-        const jobId = req.params.jobId;
+        const { taskTitle, taskCheckList, taskPriority, taskStatus, taskValidity } = req.body;
+        const taskId = req.params.taskId;
 
-        if (!companyName || !logoUrl || !title || !description || !jobId) {
+        if (!taskCheckList || !taskPriority || !taskStatus || !taskTitle || !taskId|| !taskValidity) {
             return res.status(400).json({
                 errorMessage: "Bad Request",
             });
         }
 
-        await Job.updateOne(
-            { _id: jobId },
+        await task.updateOne(
+            { _id: taskId },
             {
                 $set: {
-                    companyName,
-                    logoUrl,
-                    title,
-                    description,
+                    taskCheckList,
+                    taskPriority,
+                    taskStatus,
+                    taskTitle,
+                    taskValidity,
                 },
             }
         );
 
-        res.json({ message: "Job details updated successfully" });
+        res.json({ message: "Task details updated successfully" });
     } catch (error) {
         console.log(error);
     }
 });
 
-router.get("/job-description/:jobId", async (req, res) => {
+router.post("/edit/:taskId/", jwtVerify, async (req, res) => {
     try {
-        const jobId = req.params.jobId;
+        const {  taskCheckList } = req.body;
+        const taskId = req.params.taskId;
 
-        if (!jobId) {
+        if (!taskCheckList ) {
             return res.status(400).json({
                 errorMessage: "Bad Request",
             });
         }
 
-        const jobDetails = await Job.findById(jobId);
+        await task.updateOne(
+            { _id: taskId },
+            {
+                $set: {
+                    taskCheckList,
+                },
+            }
+        );
 
-        res.json({ data: jobDetails });
+        res.json({ message: "Task details updated successfully" });
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+router.get("/edit/:taskId", async (req, res) => {
+    try {
+        const taskId = req.params.taskId;
+
+        if (!taskId) {
+            return res.status(400).json({
+                errorMessage: "Bad Request",
+            });
+        }
+
+        const taskDetails = await task.findById(taskId);
+
+        res.json({ data: taskDetails });
     } catch (error) {
         console.log(error);
     }
@@ -89,7 +116,7 @@ router.get("/all", async (req, res) => {
             filter = { skills: { $in: [...filterSkills] } };
         }
 
-        const jobList = await Job.find(
+        const taskList = await task.find(
             {
                 title: { $regex: title, $options: "i" },
                 ...filter,
@@ -97,21 +124,18 @@ router.get("/all", async (req, res) => {
             // { companyName: 1 }
         );
 
-        res.json({ data: jobList });
+        res.json({ data: taskList });
     } catch (error) {
         console.log(error);
     }
 });
 
-router.delete("/job/:jobId", async (req, res) => {
+router.delete("/task/:taskId", async (req, res) => {
     try {
+        const taskId = req.params.taskId;
         const title = req.query.title || "";
-        const jobList = await Job.deleteById(jobId);
-
-        // add filter in the find query with skills
-        // ["html", "css", "js"] this is how skill should be saved in database document
-
-        res.json({ data: jobList });
+        const taskList = await task.deleteOne({_id:taskId});
+        res.json({ data: taskList });
     } catch (error) {
         console.log(error);
     }
