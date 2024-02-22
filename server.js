@@ -5,7 +5,7 @@ const app = express()
 const MongoClient = require('mongodb').MongoClient
 const mongoose = require('mongoose')
 const authRoutes = require('./src/routes/auth')
-// const taskRoutes = require("./src/routes/tasks.js")
+const taskRoutes = require("./src/routes/tasks")
 
 app.use(cors());
 app.use(express.urlencoded({ extended: false }))
@@ -17,7 +17,7 @@ const port = process.env.PORT
 console.log(process.env.DB_URI);
 
 app.use("/api/v1/auth", authRoutes);
-// app.use("/api/v1/task", taskRoutes);
+app.use("/api/v1/task", taskRoutes);
 
 app.post("/", (req, res)=>{
    const {email, password} = req.body

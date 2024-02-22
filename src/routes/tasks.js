@@ -5,8 +5,8 @@ const task = require("../models/task");
 
 router.post("/create", jwtVerify, async (req, res) => {
     try {
-        const { taskCheckList, taskPriority, taskStatus, taskValidity } = req.body;
-
+        const { taskTitle,taskCheckList, taskPriority, taskStatus, taskValidity } = req.body;
+console.log(taskTitle+taskCheckList + taskPriority + taskStatus + taskValidity +req.body.userId);
         if (!taskCheckList || !taskPriority || !taskStatus || !taskTitle || !taskValidity) {
             return res.status(400).json({
                 errorMessage: "Bad Request",
@@ -24,13 +24,13 @@ router.post("/create", jwtVerify, async (req, res) => {
 
         await jobDetails.save();
 
-        res.json({ message: "New job created successfully" });
+        res.json({ message: "New Task created successfully" });
     } catch (error) {
         console.log(error);
     }
 });
 
-router.post("/edit/:jobId", jwtVerify, async (req, res) => {
+router.post("/edit/:taskId", jwtVerify, async (req, res) => {
     try {
         const { companyName, logoUrl, title, description } = req.body;
         const jobId = req.params.jobId;
