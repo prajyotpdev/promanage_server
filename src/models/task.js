@@ -27,6 +27,10 @@ const taskSchema = new mongoose.Schema({
     taskCheckList:{
      type: Array,
      required: false,
+    },
+    createdBy:{
+     type: String,
+     required: true,
     }
 });
 

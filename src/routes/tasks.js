@@ -12,6 +12,7 @@ console.log(taskTitle+taskCheckList + taskPriority + taskStatus + taskValidity +
                 errorMessage: "Bad Request",
             });
         }
+        const createdBy =req.body.userId;
 
         taskDetails = new task({  
           taskCheckList,
@@ -19,6 +20,7 @@ console.log(taskTitle+taskCheckList + taskPriority + taskStatus + taskValidity +
           taskStatus,
           taskTitle,
           taskValidity,
+          createdBy,
           refUserId: req.body.userId,
         });
 
@@ -106,29 +108,78 @@ router.get("/edit/:taskId", async (req, res) => {
 
 router.get("/all", async (req, res) => {
     try {
-        const title = req.query.title || "";
-        const skills = req.query.skills;
-        let filterSkills = skills?.split(",");
+        const userID  = req.query.userid || "";
 
         let filter = {};
 
-        if (filterSkills) {
-            filter = { skills: { $in: [...filterSkills] } };
-        }
-
-        const taskList = await task.find(
-            {
-                title: { $regex: title, $options: "i" },
-                ...filter,
-            }
-            // { companyName: 1 }
-        );
+        const taskList =  await task.find({ createdBy: userID });
 
         res.json({ data: taskList });
     } catch (error) {
         console.log(error);
     }
 });
+
+router.get("/done", async (req, res) => {
+    try {
+        const userID  = req.query.userid || "";
+        // const status  = req.query.status || "";
+
+        let filter = {};
+
+        const taskList =  await task.find({ createdBy: userID , taskStatus :"Done" });
+
+        res.json({ data: taskList });
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+router.get("/inprogress", async (req, res) => {
+    try {
+        const userID  = req.query.userid || "";
+        // const status  = req.query.status || "";
+
+        let filter = {};
+
+        const taskList =  await task.find({ createdBy: userID , taskStatus :"In Progress" });
+
+        res.json({ data: taskList });
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+router.get("/backlog", async (req, res) => {
+    try {
+        const userID  = req.query.userid || "";
+        // const status  = req.query.status || "";
+
+        let filter = {};
+
+        const taskList =  await task.find({ createdBy: userID , taskStatus :"Backlog" });
+
+        res.json({ data: taskList });
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+router.get("/todo", async (req, res) => {
+    try {
+        const userID  = req.query.userid || "";
+        // const status  = req.query.status || "";
+
+        let filter = {};
+
+        const taskList =  await task.find({ createdBy: userID , taskStatus :"To-Do" });
+
+        res.json({ data: taskList });
+    } catch (error) {
+        console.log(error);
+    }
+});
+
 
 router.delete("/task/:taskId", async (req, res) => {
     try {
