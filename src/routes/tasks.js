@@ -106,24 +106,29 @@ router.get("/edit/:taskId", async (req, res) => {
     }
 });
 
-router.get("/all", async (req, res) => {
+router.get("/all",jwtVerify, async (req, res) => {
     try {
-        const userID  = req.query.userid || "";
+        const userID = req.body.userId || "";
 
-        let filter = {};
-
-        const taskList =  await task.find({ createdBy: userID });
-
+        const status  = req.query.status || "";
+        let taskList ="{'':''}";
+        if(status ==""){            
+         taskList =  await task.find({ createdBy: userID });
+        }
+        else {
+        taskList =  await task.find({ createdBy: userID , taskStatus :status });
+        }
+        
         res.json({ data: taskList });
     } catch (error) {
         console.log(error);
     }
 });
 
-router.get("/done", async (req, res) => {
+router.get("/done", jwtVerify,async (req, res) => {
     try {
-        const userID  = req.query.userid || "";
-        // const status  = req.query.status || "";
+        const userID = req.body.userId || "";
+        const status  = req.query.status || "";
 
         let filter = {};
 
@@ -135,9 +140,9 @@ router.get("/done", async (req, res) => {
     }
 });
 
-router.get("/inprogress", async (req, res) => {
+router.get("/inprogress",jwtVerify, async (req, res) => {
     try {
-        const userID  = req.query.userid || "";
+        const userID = req.body.userId || "";
         // const status  = req.query.status || "";
 
         let filter = {};
@@ -150,9 +155,9 @@ router.get("/inprogress", async (req, res) => {
     }
 });
 
-router.get("/backlog", async (req, res) => {
+router.get("/backlog",jwtVerify, async (req, res) => {
     try {
-        const userID  = req.query.userid || "";
+        const userID = req.body.userId || "";
         // const status  = req.query.status || "";
 
         let filter = {};
@@ -165,9 +170,9 @@ router.get("/backlog", async (req, res) => {
     }
 });
 
-router.get("/todo", async (req, res) => {
+router.get("/todo", jwtVerify,async (req, res) => {
     try {
-        const userID  = req.query.userid || "";
+        const userID = req.body.userId || "";
         // const status  = req.query.status || "";
 
         let filter = {};
@@ -181,7 +186,7 @@ router.get("/todo", async (req, res) => {
 });
 
 
-router.delete("/task/:taskId", async (req, res) => {
+router.delete("/task/:taskId",jwtVerify, async (req, res) => {
     try {
         const taskId = req.params.taskId;
         const title = req.query.title || "";
