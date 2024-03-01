@@ -32,7 +32,9 @@ app.get("/", (req, res)=>{
 })
 
 mongoose
-    .connect(process.env.DB_URI)
+    .connect(process.env.DB_URI,{
+        serverSelectionTimeoutMS: 5000,
+    })
     .then(() => console.log("Db connected!"))
     .catch((error) => console.log("Failed to connect", error));
 
